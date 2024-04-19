@@ -1,0 +1,12 @@
+[
+  {
+    "from": "wolf",
+    "to": "mouse",
+    "precent": 80
+  },
+  {
+    "from": "mouse",
+    "to": "wolf",
+    "precent": 0
+  }
+]

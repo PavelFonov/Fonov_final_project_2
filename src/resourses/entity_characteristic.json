@@ -1,0 +1,19 @@
+{
+  "wolf" : {
+    "weight": 12.0,
+    "maxCountOnField": 10,
+    "speed": 10,
+    "kgToFullEating": 12.0
+  },
+  "mouse" : {
+    "weight": 15.0,
+    "maxCountOnField": 14,
+    "speed": 15,
+    "kgToFullEating": 11.0
+  }
+}
+
+
+
+
+
