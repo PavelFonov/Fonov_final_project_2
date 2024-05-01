@@ -4,10 +4,22 @@ import com.fonov.service.AnimalAction;
 
 public abstract class Animal extends Entity  implements AnimalAction {
 
-    private  boolean isMovedInThisLap = false;
+    public int getHealthPercent() {
+        return healthPercent;
+    }
+
+    public boolean isMovedInThisLap() {
+        return isMovedInThisLap;
+    }
+
+    private int healthPercent;
+
+    private  boolean isMovedInThisLap;
 
     protected Animal(Double weight, Integer maxCountOnField, Integer speed, Double kgToFullEating) {
         super(weight, maxCountOnField, speed, kgToFullEating);
+        this.healthPercent = 100;
+        isMovedInThisLap = false;
     }
 
     @Override
@@ -23,5 +35,9 @@ public abstract class Animal extends Entity  implements AnimalAction {
     @Override
     public void chooseDirection() {
 
+    }
+
+    public void decreaseHealthPercent(int decreaseFor){
+        this.healthPercent -= decreaseFor;
     }
 }

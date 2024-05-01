@@ -2,7 +2,7 @@ package com.fonov;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fonov.config.EntityCharacteristicConfig;
-import com.fonov.config.FieldSizeConfig;
+import com.fonov.config.IslandConfig;
 import com.fonov.config.PossibilityOfEatingConfig;
 import com.fonov.models.abstracts.Animal;
 import com.fonov.models.abstracts.Entity;
@@ -18,17 +18,25 @@ import com.fonov.service.impl.MoveServiceImpl;
 import java.util.*;
 import java.util.stream.IntStream;
 
+import static com.fonov.consts.Consts.*;
+
 public class Main {
     public static void main(String[] args) {
 
-        Random random = new Random();
+
 
         ObjectMapper objectMapper = new ObjectMapper();
-        EntityCharacteristicConfig entityCharacteristicConfig = new EntityCharacteristicConfig(objectMapper, "entity_characteristic.json");
-        PossibilityOfEatingConfig possibilityOfEatingConfig = new PossibilityOfEatingConfig(objectMapper, "resourses/possibility_of_eating.json");
-        FieldSizeConfig fieldSizeConfig = new FieldSizeConfig(100, 20);
+        EntityCharacteristicConfig entityCharacteristicConfig = new EntityCharacteristicConfig(objectMapper, PATH_TO_ENTITY_CHARACTERISTICS);
+        PossibilityOfEatingConfig possibilityOfEatingConfig = new PossibilityOfEatingConfig(objectMapper, PATH_TO_POSSIBIBLITY);
+        IslandConfig islandConfig = new IslandConfig(PATH_TO_ISLAND_SETTINGS);
 
-        Island island = createIsland(fieldSizeConfig);
+        //этап изменения дефолтных настроек
+        System.out.println("Будешь что-то менять?");
+        islandConfig.setWidth(100);
+
+        Random random = new Random();
+
+        Island island = createIsland(islandConfig);
         MoveService moveService = new MoveServiceImpl(island);
 
         ChooseDirectionServiceImpl chooseDirectionServiceImpl = new ChooseDirectionServiceImpl(random);
@@ -91,10 +99,10 @@ public class Main {
                 .getSpeed();
     }
 
-    private static Island createIsland(FieldSizeConfig fieldSizeConfig) {
+    private static Island createIsland(IslandConfig islandConfig) {
         Map<Field, List<Entity>> island = new HashMap<>();
-        for (int i = 0; i < fieldSizeConfig.getWidth(); i++) {
-            for (int j = 0; j < fieldSizeConfig.getHeight(); j++) {
+        for (int i = 0; i < islandConfig.getWidth(); i++) {
+            for (int j = 0; j < islandConfig.getHeight(); j++) {
                 Field field = new Field(i, j);
                 island.put(field, new ArrayList<>());
             }
