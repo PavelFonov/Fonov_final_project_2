@@ -2,61 +2,77 @@ package com.fonov.models.island;
 
 import com.fonov.models.abstracts.Animal;
 import com.fonov.models.abstracts.Entity;
-import com.fonov.models.plants.Grass;
 import com.fonov.models.plants.Plant;
-import com.fonov.service.IslandAction;
+import com.fonov.service.action.island.impl.IslandAction;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Island implements IslandAction {
-    private Map<Field, List<Entity>> island;
+    private Double countOfNewAnimal;
+    private final int width;
+    private final int height;
+    private final int daysOfLife;
+    private double countOfDeathAnimals = 0.0;
+
+    private final Map<Field, List<Entity>> island;
+
+    public Island(Map<Field, List<Entity>> island, int width, int height, int daysOfLife, double countOfNewAnimal) {
+        this.width = width;
+        this.height = height;
+        this.daysOfLife = daysOfLife;
+        this.island = island;
+        this.countOfNewAnimal = countOfNewAnimal;
+    }
 
     public Map<Field, List<Entity>> getIsland() {
         return island;
     }
 
-    public Island(Map<Field, List<Entity>> island) {
-        this.island = island;
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getDaysOfLife() {
+        return daysOfLife;
+    }
+
+    public double getCountOfDeathAnimals() {
+        return countOfDeathAnimals;
     }
 
     //удаление животных, которые умирают на данном ходу
-
     @Override
     public void removeDeathAnimal() {
-        for (Map.Entry<Field, List<Entity>> fieldListEntry : island.entrySet()) {
-            var allAnimals = fieldListEntry.getValue();
-            for (Entity entity : allAnimals) {
-                if (entity instanceof Animal) {
-                    Animal animal = (Animal) entity;
-                    if (animal.getHealthPercent() <= 0) {
-                        allAnimals.remove(entity);
+        for (var fieldListEntry : island.entrySet()) {
+            List<Entity> entities = fieldListEntry.getValue();
+            int entitiesSize = entities.size();
+            entities.removeIf(el -> (el.getHealthPercent() <= 0) && (el instanceof Animal));
+            int newEntitiesSize = entities.size();
+            countOfDeathAnimals += entitiesSize - newEntitiesSize;
+        }
+    }
 
-                    }
+    //восстановление травы на данном ходу
+    @Override
+    public void refildPlants() {
+        for (Map.Entry<Field, List<Entity>> fieldListEntry : island.entrySet()) {
+            var allPlants = fieldListEntry.getValue();
+            for (Entity entity : allPlants) {
+                if (entity instanceof Plant) {
+                    entity.setHealthPercent(100);
                 }
             }
         }
     }
-
-
-    //остров насыщает травой
-
-    @Override
-    public void refildPlants(int maxCountOfPkantInOneFeilds) {
-        for (var value : island.entrySet()) {
-            var totalCountOfPlants = island
-                    .values()
-                    .stream()
-                    .filter(entity -> entity instanceof Plant).count();
-            if (totalCountOfPlants < maxCountOfPkantInOneFeilds) {
-                List<Plant> plants = new ArrayList<>();
-                for (int i = 0; i < maxCountOfPkantInOneFeilds - totalCountOfPlants; i++) {
-                    Plant plant = new Grass();
-                    plants.add(plant);
-                    island.put(value.getKey(), List.of((Entity) plants));
-                }
-            }
-        }
+    public Double getCountOfNewAnimal() {
+        return countOfNewAnimal;
     }
 }
+
+
+
